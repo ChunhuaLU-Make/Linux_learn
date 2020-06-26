@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -8,6 +9,8 @@ int main()
 {
     int i = 0;
     pid_t pid;
+    uint8_t pid_flage = 0xff;
+
     for(i = 0; i < 2; i++)
     {
         pid = fork();
@@ -21,12 +24,20 @@ int main()
     /* Create lost of brother  process */
     if(i == 0)
     {
-        printf("child:%d temp%d\n", getpid(), temp);
+        pid_flage = 1;
+        printf("temp address:0x%x\n", &temp);
+        temp = 1000;
+        printf("write temp address:0x%x\n",&temp);
+        sleep(1);
     }
 
     if(i == 1)
     {
-        printf("child 1:%d temp:%d\n", getpid(), ++temp);
+        pid_flage = 2;
+        printf("father temp address:0x%x\n", &temp);
+        temp = 2000;
+        printf("write father address:0x%x\n", &temp);
+        sleep(1);
     }
 
     if(i == 2)
@@ -34,6 +45,15 @@ int main()
         /* This is a father process */
         printf("3 child:%d father:%d\n", getpid(),getppid());
     }
-    usleep(10);
+    sleep(10);
+    if(pid_flage == 1)
+    {
+        printf("temp 1:%d\n", temp);
+    }
+    else if(pid_flage == 2)\
+    {
+        printf("temp 2:%d\n", temp);
+    }
+    printf("temp :%d\n", temp);
     return 0;
 }
