@@ -30,7 +30,7 @@ int main()
     if(pid > 0)
     {
         close(pipefd[1]);
-    dup2(pipefd[0], STDIN_FILENO);
+        dup2(pipefd[0], STDIN_FILENO);
         execlp("grep","grep", "bash",NULL);
         perror("execlp");
         exit(1);
